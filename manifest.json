@@ -1,6 +1,6 @@
 {
-  "name": "대학로 이벤트 카페",
-  "short_name": "이벤트카페",
+  "name": "댕로이벵카페",
+  "short_name": "댕로이벵카페",
   "description": "대학로 배우 서포트 이벤트 카페 일정을 모아보는 앱",
   "start_url": "./index.html",
   "scope": "./",
