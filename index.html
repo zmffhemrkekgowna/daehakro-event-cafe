@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대학로 이벤트 카페</title>
+<meta name="theme-color" content="#14161f">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #14161f;
+    --bg-vignette: #0d0e15;
+    --card: #f6efdd;
+    --ink: #211c14;
+    --ink-soft: #6b6152;
+    --amber: #e2a13a;
+    --amber-deep: #b97c1f;
+    --velvet: #a83a45;
+    --line: #cabf9c;
+    --focus: #f2c069;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: radial-gradient(ellipse at top, #1c2030 0%, var(--bg) 55%, var(--bg-vignette) 100%);
+    color: var(--card);
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 32px 20px 80px;
+  }
+  .wrap{ max-width: 960px; margin: 0 auto; }
+
+  .marquee{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; padding-bottom: 22px; border-bottom: 1px solid rgba(226,161,58,0.35); margin-bottom: 26px; }
+  .marquee h1{ font-family:"Noto Serif KR", serif; font-weight:900; font-size: clamp(26px, 4vw, 38px); margin:0; letter-spacing: -0.01em; color: #f7ecd2; }
+  .marquee p{ margin: 6px 0 0; color:#b9b2a0; font-size:14px; }
+
+  .support-btn{ display:inline-flex; align-items:center; gap:7px; background: transparent; border: 1px solid rgba(226,161,58,0.5); color: #f2c069; border-radius: 999px; padding: 11px 18px; font-size:14px; font-weight:600; cursor:pointer; font-family: inherit; transition: background .15s ease, border-color .15s ease; }
+  .support-btn:hover{ background: rgba(226,161,58,0.12); border-color: var(--amber); }
+  .support-btn:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+
+  .controls{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom: 26px; }
+  .search-box{ flex: 1 1 220px; display:flex; align-items:center; gap:8px; background: rgba(246,239,221,0.06); border: 1px solid rgba(246,239,221,0.18); border-radius: 10px; padding: 10px 14px; }
+  .search-box svg{ flex-shrink:0; opacity:.6; }
+  .search-box input{ flex:1; background:transparent; border:none; color:#f6efdd; font-size:14px; outline:none; font-family: inherit; }
+  .search-box input::placeholder{ color:#8a8272; }
+  .tabs{ display:flex; gap:6px; }
+  .tab{ background:transparent; border:1px solid rgba(246,239,221,0.2); color:#c9c2b0; padding:9px 14px; border-radius: 999px; font-size:13px; cursor:pointer; font-family:inherit; transition: all .15s ease; white-space:nowrap; }
+  .tab.active{ background: rgba(226,161,58,0.16); border-color: var(--amber); color: #f2c069; font-weight:700; }
+  .tab:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
+
+  .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+  .ticket{ background: var(--card); color: var(--ink); border-radius: 14px; position: relative; box-shadow: 0 10px 24px rgba(0,0,0,0.35); overflow: hidden; display:flex; flex-direction: column; }
+  .ticket-body{ padding: 18px 20px 16px; }
+  .ticket-status{ display:inline-block; font-size:11px; font-weight:700; padding: 3px 10px; border-radius: 999px; margin-bottom: 10px; }
+  .status-ongoing{ background: rgba(168,58,69,0.14); color: var(--velvet); }
+  .status-upcoming{ background: rgba(226,161,58,0.18); color: var(--amber-deep); }
+  .status-ended{ background: rgba(107,97,82,0.14); color: var(--ink-soft); }
+  .ticket h2{ font-family:"Noto Serif KR", serif; font-weight:800; font-size: 19px; margin: 0 0 2px; line-height:1.3; }
+  .ticket .actor{ font-size: 14px; color: var(--velvet); font-weight:700; margin: 0 0 12px; }
+  .meta-row{ display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color: #423b2c; margin-bottom: 6px; line-height:1.45; }
+  .meta-row svg{ flex-shrink:0; margin-top:2px; opacity:.65; }
+  .memo{ margin-top:8px; font-size:12.5px; color: var(--ink-soft); line-height:1.5; }
+
+  .perforation{ position:relative; height: 0; border-top: 2px dashed var(--line); margin: 4px 0 0; }
+  .perforation::before, .perforation::after{ content:""; position:absolute; top:-9px; width:18px; height:18px; background: var(--bg); border-radius:50%; }
+  .perforation::before{ left:-29px; }
+  .perforation::after{ right:-29px; }
+
+  .ticket-actions{ padding: 12px 20px 16px; display:flex; justify-content:flex-start; align-items:center; gap:10px; }
+  .link-btn{ display:inline-flex; align-items:center; gap:7px; background: var(--ink); color: #f6efdd; text-decoration:none; font-size:13px; font-weight:600; padding: 8px 14px; border-radius: 8px; transition: background .15s ease; }
+  .link-btn:hover{ background:#3a3123; }
+  .link-btn.disabled{ background: rgba(33,28,20,0.12); color: var(--ink-soft); pointer-events:none; }
+
+  .empty{ text-align:center; padding: 70px 20px; color:#a79f8c; border: 1px dashed rgba(246,239,221,0.2); border-radius: 16px; }
+  .empty h3{ font-family:"Noto Serif KR", serif; color:#f0e6c8; font-size:20px; margin: 0 0 8px; }
+  .empty p{ margin:0; font-size:14px; }
+
+  .loading{ text-align:center; padding: 60px 0; color:#a79f8c; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="marquee">
+    <div>
+      <h1>대학로 이벤트 카페</h1>
+      <p id="taglineText">공연 배우 서포트 카페 일정을 한곳에 모아보세요</p>
+    </div>
+    <button class="support-btn" id="supportBtn" style="display:none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      후원하기
+    </button>
+  </div>
+
+  <div class="controls">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="배우명 또는 카페명 검색">
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-filter="all">전체</button>
+      <button class="tab" data-filter="active">진행중 · 예정</button>
+      <button class="tab" data-filter="ended">종료</button>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="loading">불러오는 중…</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC_GnZQh7sLtIt85TZSeAuCB-hkoeTozI0",
+  authDomain: "event-cafe-hyehwa.firebaseapp.com",
+  projectId: "event-cafe-hyehwa",
+  storageBucket: "event-cafe-hyehwa.firebasestorage.app",
+  messagingSenderId: "47128695573",
+  appId: "1:47128695573:web:c6e2bf2a395c05914a4f1c",
+  measurementId: "G-PE84VHSE3H"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const eventsCol = collection(db, 'events');
+const generalDocRef = doc(db, 'settings', 'general');
+
+let events = [];
+let currentFilter = 'all';
+let searchTerm = '';
+const contentEl = document.getElementById('content');
+
+onSnapshot(eventsCol, (snapshot)=>{
+  events = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  render();
+}, (err)=>{
+  console.error('불러오기 오류', err);
+  contentEl.innerHTML = `<div class="empty"><h3>불러오기 실패</h3><p>잠시 후 다시 시도해주세요.</p></div>`;
+});
+
+getDoc(generalDocRef).then(snap => {
+  const data = snap.exists() ? snap.data() : {};
+  const link = data.link || '';
+  const tagline = data.tagline || '';
+  const bgColor = data.bgColor || '';
+  if(tagline) document.getElementById('taglineText').textContent = tagline;
+  if(bgColor) document.body.style.background = bgColor;
+  if(link){
+    const btn = document.getElementById('supportBtn');
+    btn.style.display = '';
+    btn.addEventListener('click', ()=> window.open(link, '_blank', 'noopener,noreferrer'));
+  }
+}).catch(()=>{});
+
+function todayMidnight(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+function parseDate(str){ if(!str) return null; const d = new Date(str + 'T00:00:00'); return isNaN(d) ? null : d; }
+function fmtDate(str){ const d = parseDate(str); if(!d) return ''; return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+function dateRangeLabel(ev){ if(!ev.endDate || ev.endDate === ev.startDate) return fmtDate(ev.startDate); return `${fmtDate(ev.startDate)} ~ ${fmtDate(ev.endDate)}`; }
+function computeStatus(ev){
+  const today = todayMidnight();
+  const start = parseDate(ev.startDate);
+  const end = parseDate(ev.endDate) || start;
+  if(!start) return { key:'upcoming', label:'예정' };
+  if(end < today) return { key:'ended', label:'종료' };
+  if(start <= today && today <= end) return { key:'ongoing', label:'진행중' };
+  const diff = Math.ceil((start - today) / (1000*60*60*24));
+  return { key:'upcoming', label: `D-${diff}` };
+}
+function iconCalendar(){ return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`; }
+function iconClock(){ return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>`; }
+function iconPin(){ return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`; }
+function iconExternal(){ return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`; }
+function escapeHtml(str){ return String(str ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
+function escapeAttr(str){ return escapeHtml(str); }
+
+function getFiltered(){
+  let list = events.map(ev => ({ ev, status: computeStatus(ev) }));
+  if(currentFilter === 'active') list = list.filter(x => x.status.key !== 'ended');
+  else if(currentFilter === 'ended') list = list.filter(x => x.status.key === 'ended');
+  if(searchTerm.trim()){
+    const q = searchTerm.trim().toLowerCase();
+    list = list.filter(x => (x.ev.actor || '').toLowerCase().includes(q) || (x.ev.cafeName || '').toLowerCase().includes(q));
+  }
+  const rank = { ongoing:0, upcoming:1, ended:2 };
+  list.sort((a,b)=>{
+    if(rank[a.status.key] !== rank[b.status.key]) return rank[a.status.key]-rank[b.status.key];
+    const da = parseDate(a.ev.startDate) || 0;
+    const db_ = parseDate(b.ev.startDate) || 0;
+    if(a.status.key === 'ended') return db_ - da;
+    return da - db_;
+  });
+  return list;
+}
+
+function render(){
+  const list = getFiltered();
+  if(events.length === 0){
+    contentEl.innerHTML = `<div class="empty"><h3>아직 등록된 이벤트 카페가 없어요</h3><p>새로운 소식이 올라오면 여기에 표시돼요.</p></div>`;
+    return;
+  }
+  if(list.length === 0){
+    contentEl.innerHTML = `<div class="empty"><h3>조건에 맞는 카페가 없어요</h3><p>검색어나 필터를 바꿔보세요.</p></div>`;
+    return;
+  }
+  contentEl.innerHTML = `<div class="grid">${list.map(({ev, status}) => `
+    <div class="ticket">
+      <div class="ticket-body">
+        <span class="ticket-status status-${status.key}">${status.label}</span>
+        <h2>${escapeHtml(ev.cafeName)}</h2>
+        <p class="actor">${escapeHtml(ev.actor)}</p>
+        ${ev.place ? `<div class="meta-row">${iconPin()}<span>${escapeHtml(ev.place)}</span></div>` : ''}
+        <div class="meta-row">${iconCalendar()}<span>${dateRangeLabel(ev)}</span></div>
+        ${ev.time ? `<div class="meta-row">${iconClock()}<span>${escapeHtml(ev.time)}</span></div>` : ''}
+        ${ev.memo ? `<div class="memo">${escapeHtml(ev.memo)}</div>` : ''}
+      </div>
+      <div class="perforation"></div>
+      <div class="ticket-actions">
+        ${ev.link ? `<a class="link-btn" href="${escapeAttr(ev.link)}" target="_blank" rel="noopener noreferrer">${iconExternal()} 공지 보기</a>` : `<span class="link-btn disabled">${iconExternal()} 링크 없음</span>`}
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tab');
+  if(!btn) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  render();
+});
+document.getElementById('searchInput').addEventListener('input', (e)=>{ searchTerm = e.target.value; render(); });
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

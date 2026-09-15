@@ -1,0 +1,25 @@
+{
+  "name": "대학로 이벤트 카페",
+  "short_name": "이벤트카페",
+  "description": "대학로 배우 서포트 이벤트 카페 일정을 모아보는 앱",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#14161f",
+  "theme_color": "#14161f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
